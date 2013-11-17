@@ -1,6 +1,4 @@
-
 assert   = require 'assert'
-dgram    = require 'dgram'
 {Buffer} = require 'buffer'
 
 
@@ -34,13 +32,14 @@ class KiwiMove
         rangePercentage = (min, value, max) ->
             return (value - min) / (max - min)
 
-        clamp = (value) ->
+        clamp = (min, value, max) ->
             return Math.min (Math.max value, min), max
 
         normalizeValue = (range) -> (value) ->
             return '0000' if value is undefined
             [min, max] = range
-            percentage = rangePercentage(min, clamp(min, value, max), max)
+            value = clamp(min, value, max)
+            percentage = rangePercentage(min, value, max)
             return percentageToHex(percentage, 4)
 
         return (messageIndex, x, y, z, range, done) ->
